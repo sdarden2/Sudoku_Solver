@@ -1,0 +1,1 @@
+To run the sudoku solver use: python sudoku_solve.py <filename-containing-matrices>
