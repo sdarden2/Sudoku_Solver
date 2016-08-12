@@ -1,22 +1,33 @@
 #Search Tree
 #Want to perform a depth-first type search
+
 import Queue
 import copy
+
 SUCCESS = 1
 NO_SUCCESS = 0
 
 			
+#Takes a board_matrix of Rect object and converts to matrix of number values
+"""
+	Params:
+		mat: board_matrix
+	Returns:
+		mat2: matrix of numbers 2-dimensional array
+"""
 def board_to_matrix(mat):
-	#Takes a board_matrix of Rect object and convets to matrix of number values
 	mat2 = []
+	
 	for i in range(9):
 		row = []
 		for j in range(9):
 			row.append(mat[i][j].value)
+			
 		mat2.append(row)
 		row = []
+		
 	return mat2
-	
+#Compares two matrices and tests if they have the same entries	
 def cmp_same(mat_a,mat_b):
 	for i in range(9):
 		for j in range(9):
