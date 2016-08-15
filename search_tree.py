@@ -3,7 +3,7 @@
 
 import Queue
 import copy
-
+###Do I need this???###
 SUCCESS = 1
 NO_SUCCESS = 0
 
@@ -27,7 +27,15 @@ def board_to_matrix(mat):
 		row = []
 		
 	return mat2
-#Compares two matrices and tests if they have the same entries	
+#Compares two matrices and tests if they have the same entries
+"""
+	Params:
+		mat_a: matrix a
+		mat_b: matrix b
+	Returns:
+		True: if matrices have all the same entries
+		False: if matricies do not have the same entries
+"""
 def cmp_same(mat_a,mat_b):
 	for i in range(9):
 		for j in range(9):
@@ -36,39 +44,66 @@ def cmp_same(mat_a,mat_b):
 			if val1 != val2:
 				return False
 	return True
+"""Class to represent Tree node"""
 class Node:
+	"""
+	Constructor
+	Params:
+		parent: parent node
+		state: current sudoku board state
+		action: action to perform on the sudoku board
+	"""
 	def __init__(self,parent,state,action):
 		self.state = state
 		self.parent = parent
 		self.expanded = False
 		self.children = Queue.Queue()
 		self.action = action #Action is the (rect,val) that produced this state
-	
+"""
+Tree class to represent search tree"""
 class SearchTree:
+"""
+Constructor method
+Params:
+	start_state: initial state of the sudoku board
+	goal_state: goal state of the sudoku board (solved)
+	solver: sudoker solver object
+"""
 	def __init__(self, start_state, goal_state, solver):
 		self.solver = solver #just call solver functions from here
 		self.state = start_state
 		self.root = Node(None,start_state,None)
 		self.current_node = self.root
 		self.goal_state = goal_state
-		self.action_list = [] #list of all states passed, 
+		self.action_list = [] #list of all states passed
 		
 	#make sure to check if node has been visited or not before calling this!!!
+	"""Expands search tree by looking at all possibilites from the current node
+	Params:
+		current_node: the current node being considered and expanded
+	Returns:
+		None
+	"""
 	def expand_node(self,current_node):
 		(cell,sset) = self.solver.find_next_cell(current_node.state)
+		
 		if sset == None:
-			return None #?
+			return None 
+			
 		possibles = set(range(1,10)) - sset
+		
 		for i in possibles:
 			new_state = copy.deepcopy(current_node.state)
 			new_cell = new_state[cell.i][cell.j]
 			new_cell.set_value(None,i)
+			
 			if not self.solver.is_valid_move(new_cell,new_state):
 				new_cell.set_value(None,0)
 			else:
 				node = Node(current_node,new_state,(self.solver.board_matrix[cell.i][cell.j],i))
 				node.action = (self.solver.board_matrix[cell.i][cell.j],i)
 				current_node.children.put(node)
+				
 		current_node.expanded = True
 	def do_search(self):
 		return self.search(self.root,self.state)
